@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { GrAdd } from "react-icons/gr";
 import ListItem from '../components/ListItem';
 
 const Home = () => {
     const [addingList, setAddingList] = useState(false);
     const [listName, setListName] = useState('');
     const [lists, setLists] = useState([]);
+    const [cards, setCards] = useState([]);
 
     const _handleAddList = () => {
         console.log('Adding List:', listName);
@@ -13,18 +15,22 @@ const Home = () => {
         setListName('');
     }
 
+    const addCardToList = (newCard) => {
+        setCards([...cards, newCard]);
+    }
+
     return (
-        <div className='flex flex-row flex-start'>
+        <div className='flex flex-row'>
             <div>
                 {lists.map((item, index) => (
                     <div key={index}>
-                        <ListItem item={item} />
+                        <ListItem item={item} onAddCard={addCardToList} />
                     </div>
                 ))}
             </div>
             <div>
                 {!addingList ? (
-                    <button onClick={() => setAddingList(true)}>Add List</button>
+                    <button onClick={() => setAddingList(true)}><span><GrAdd /></span>Add List</button>
                 ) : (
                     <div>
                         <input
