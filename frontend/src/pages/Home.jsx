@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react';
 import { GrAdd } from "react-icons/gr";
 import ListItem from '../components/ListItem';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, QueryClient } from '@tanstack/react-query';
 
-const Home = () => {
+const Home = ({ client }) => {
     const [addingList, setAddingList] = useState(false);
     const [listName, setListName] = useState('');
-    const [lists, setLists] = useState([]);
     const [cards, setCards] = useState([]);
 
-    const { isFetching, error, data } = useQuery({
+    const { isFetching, error, data: lists, refetch } = useQuery({
         queryKey: ['lists'],
         queryFn: async () => {
             const response = await fetch('http://localhost:3001/lists');
@@ -18,39 +17,30 @@ const Home = () => {
         },
     })
 
-    useEffect(() => {
-        if (data) {
-            setLists(data);
-        }
-    }, [data]);
-
-    const mutation = useMutation({
-        mutationFn: async (formData) => {
+    const addListMutation = useMutation({
+        mutationFn: async (newList) => {
             const response = await fetch('http://localhost:3001/lists', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(newList),
             });
-            if (!response.ok) throw new Error('Bad Request');
+            if (!response.ok) throw new Error('Network response was not ok');
             return response.json();
         },
-    })
+        onSuccess: () => {
+            // Invalidate and refetch lists query to update the UI
+            client.invalidateQueries(['lists']);
+        },
+    });
     
 
-    const _handleAddList = () => {
-        mutation.mutate({ title: listName }, {
-            onSuccess: (data) => {
-                console.log('List added:', data);
-                setAddingList(false);
-                setListName('');
-            },
-            onError: (error) => {
-                console.log('Error adding list:', error);
-            },
-        
-        });
+    const _handleSubmit = async (e) => {
+        e.preventDefault();
+        await addListMutation.mutateAsync({ title: listName });
+        setListName('');
+        setAddingList(false);
     }
 
 
@@ -60,14 +50,13 @@ const Home = () => {
 
     if (isFetching) return <p>Loading...</p>
     if (error) return <p>Error: {error.message}</p>
-    if (!data) return console.log('No data found');
 
     return (
         <div className='flex flex-row'>
-            <div>
-                {lists.map((list, index) => (
+            <div className='flex flex-row flex-start'>
+                {lists?.map((list, index) => (
                     <div key={index}>
-                        <ListItem list={list} onAddCard={addCardToList} />
+                        <ListItem list={list} onAddCard={addCardToList} client={client} />
                     </div>
                 ))}
             </div>
@@ -75,16 +64,16 @@ const Home = () => {
                 {!addingList ? (
                     <button onClick={() => setAddingList(true)}><span><GrAdd /></span>Add List</button>
                 ) : (
-                    <div>
+                    <form onSubmit={_handleSubmit}>
                         <input
                             type='text'
                             placeholder='Enter a title for this list...'
                             value={listName}
                             onChange={(e) => setListName(e.target.value)}
                         />
-                        <button onClick={_handleAddList}>Save</button>
+                        <button type='submit'>Save</button>
                         <button onClick={() => setAddingList(false)}>Cancel</button>
-                    </div>
+                    </form>
                 
                 )}
             </div>

@@ -4,14 +4,16 @@ import Navbar from '../components/Navbar'
 import Home from './Home'
 import { QueryClient, QueryClientProvider} from '@tanstack/react-query';
 
+const queryClient = new QueryClient();
+
 function App() {
 
   return (
     <div>
         <Navbar />
-        <QueryClientProvider client={new QueryClient()}>
+        <QueryClientProvider client={queryClient}>
             <Routes>
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<Home client={queryClient} />} />
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
         </QueryClientProvider>

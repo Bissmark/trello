@@ -9,12 +9,12 @@ const PriorityLevels = {
   Low: "Low",
 };
 
-const CardForm = ({ list, isOpen, onClose, setNewCard, setCards }) => {
+const CardForm = ({ list, isOpen, onClose, client}) => {
     const [image, setImage] = useState('');
     const [card, setCard] = useState({
         title: '',
         description: '',
-        priority: PriorityLevels.Low,
+        priority: PriorityLevels.High,
     });
 
     const _handleImageChange = (e) => {
@@ -34,26 +34,18 @@ const CardForm = ({ list, isOpen, onClose, setNewCard, setCards }) => {
             if (!response.ok) throw new Error('Bad Request');
             return response.json();
         },
+        onSuccess: () => {
+            client.invalidateQueries(['cards']);
+        }
     })
         
-    const _handleSubmit = (e) => {
+    const _handleSubmit = async (e) => {
         e.preventDefault();
         const newCard = {
             ...card,
             listId: list._id,
         };
-        mutation.mutate(newCard, {
-            onSuccess: (data) => {
-                console.log('Card added:', data);
-                //_handleSuccess(data);
-                setNewCard(newCard);
-                setCards((cards) => [...cards, newCard]);
-                onClose();
-            },
-            onError: (error) => {
-                console.log('Error adding card:', error);
-            },
-        });
+        await mutation.mutateAsync(newCard);
     };
 
     if (!isOpen) return null;
