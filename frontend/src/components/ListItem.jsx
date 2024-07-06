@@ -14,6 +14,7 @@ const ListItem = ({ list, onAddCard }) => {
         description: '',
         image: '',
     });
+    console.log(list);
 
     const _handleAddCard = () => {
         console.log('Adding List:', cardName);
@@ -26,7 +27,7 @@ const ListItem = ({ list, onAddCard }) => {
         <div>
             <h3>{list.title}</h3>
             <div className='flex flex-col'>
-                {cards.map((card, index) => (
+                {list.cards.map((card, index) => (
                     <div key={index}>
                         <Link to={`/card/${card.title}`}>
                             <CardDetail card={card} />

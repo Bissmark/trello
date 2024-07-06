@@ -1,9 +1,8 @@
 const List = require('../models/list');
-const Card = require('../models/card');
 
 const index = async (req, res) => {
     try {
-        const lists = await List.find({});
+        const lists = await List.find({}).populate('cards');
         res.status(200).json(lists);
     } catch(err) {
         res.status(400).json(err);
