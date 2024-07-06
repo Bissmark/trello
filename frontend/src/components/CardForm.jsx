@@ -1,30 +1,59 @@
 import { useState } from "react";
 import { MdDriveFileRenameOutline, MdOutlineDescription } from "react-icons/md";
 import { GoImage } from "react-icons/go";
-import { BiCategory } from "react-icons/bi";
+import { useQuery, useMutation } from '@tanstack/react-query';
+
+const PriorityLevels = {
+  High: "High",
+  Medium: "Medium",
+  Low: "Low",
+};
 
 const CardForm = ({ list, isOpen, onClose, setNewCard, setCards }) => {
     const [image, setImage] = useState('');
     const [card, setCard] = useState({
         title: '',
         description: '',
-        image: '',
+        priority: PriorityLevels.Low,
     });
 
     const _handleImageChange = (e) => {
         setImage(e.target.files[0]);
     };
+
+    const mutation = useMutation({
+        mutationFn: async (formData) => {
+            console.log('formData:', formData);
+            const response = await fetch('http://localhost:3001/cards', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+            if (!response.ok) throw new Error('Bad Request');
+            return response.json();
+        },
+    })
         
     const _handleSubmit = (e) => {
         e.preventDefault();
         const newCard = {
             ...card,
-            list
+            listId: list._id,
         };
-        console.log('Adding Card:', newCard);
-        setNewCard(newCard);
-        setCards((cards) => [...cards, newCard]);
-        onClose();
+        mutation.mutate(newCard, {
+            onSuccess: (data) => {
+                console.log('Card added:', data);
+                //_handleSuccess(data);
+                setNewCard(newCard);
+                setCards((cards) => [...cards, newCard]);
+                onClose();
+            },
+            onError: (error) => {
+                console.log('Error adding card:', error);
+            },
+        });
     };
 
     if (!isOpen) return null;
@@ -52,13 +81,23 @@ const CardForm = ({ list, isOpen, onClose, setNewCard, setCards }) => {
                             onChange={(e) => setCard({ ...card, description: e.target.value })}
                         />
                     </div>
-                    <div className="file-upload my-4">
+                    <div>
+                        <select 
+                            name="priority"
+                            onChange={(e) => setCard({ ...card, priority: e.target.value })}
+                        >
+                            {Object.values(PriorityLevels).map((level, index) => (
+                                <option key={index} value={level}>{level}</option>
+                            ))}
+                        </select>
+                    </div>
+                    {/* <div className="file-upload my-4">
                         <GoImage />
                         <input type="file" id="files" className="hidden" onChange={_handleImageChange} />
                         <label htmlFor="files" className="label cursor-pointer">
                             {image ? image.name : 'Select File'}
                         </label>
-                    </div>
+                    </div> */}
                     <div className="flex justify-end gap-2">
                         <button type="button" onClick={onClose} className="btn">Cancel</button>
                         <button type="submit" className="btn btn-primary">Add Card</button>

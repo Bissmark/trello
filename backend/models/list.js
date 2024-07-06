@@ -3,11 +3,10 @@ const Schema = mongoose.Schema;
 
 const listSchema = new Schema({
     title: String,
-    description: String,
-    priority: {
-        type: String,
-        enum: ['High', 'Medium', 'Low']
-    },
+    cards: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Card'
+    }]
 }, {
     timestamps: true
 });

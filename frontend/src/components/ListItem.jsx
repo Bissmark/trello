@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import CardForm from './CardForm';
 import CardDetail from './CardDetail';
 
-const ListItem = ({ item, onAddCard }) => {
+const ListItem = ({ list, onAddCard }) => {
     const [addingCard, setAddingCard] = useState(false);
     const [cardName, setCardName] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,7 +24,7 @@ const ListItem = ({ item, onAddCard }) => {
 
     return (
         <div>
-            <h3>{item}</h3>
+            <h3>{list.title}</h3>
             <div className='flex flex-col'>
                 {cards.map((card, index) => (
                     <div key={index}>
@@ -40,7 +40,7 @@ const ListItem = ({ item, onAddCard }) => {
                         <span><GrAdd /></span>
                         Add Card
                     </button>
-                    <CardForm list={item} setCards={setCards} setNewCard={setNewCard} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+                    <CardForm list={list} setCards={setCards} setNewCard={setNewCard} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
                 </>
             ) : (
                 <div>

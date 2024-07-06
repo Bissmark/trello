@@ -1,10 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GrAdd } from "react-icons/gr";
 import ListItem from '../components/ListItem';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { Form } from 'react-router-dom';
-
-
 
 const Home = () => {
     const [addingList, setAddingList] = useState(false);
@@ -21,24 +18,28 @@ const Home = () => {
         },
     })
 
+    useEffect(() => {
+        if (data) {
+            setLists(data);
+        }
+    }, [data]);
+
     const mutation = useMutation({
-    mutationFn: async (formData) => {
-        const response = await fetch('http://localhost:3001/lists', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-        });
-        if (!response.ok) throw new Error('Bad Request');
-        return response.json();
-    },
-})
+        mutationFn: async (formData) => {
+            const response = await fetch('http://localhost:3001/lists', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+            if (!response.ok) throw new Error('Bad Request');
+            return response.json();
+        },
+    })
     
 
     const _handleAddList = () => {
-        console.log('Adding List:', listName);
-        setLists([...lists, listName]);
         mutation.mutate({ title: listName }, {
             onSuccess: (data) => {
                 console.log('List added:', data);
@@ -64,9 +65,9 @@ const Home = () => {
     return (
         <div className='flex flex-row'>
             <div>
-                {lists.map((item, index) => (
+                {lists.map((list, index) => (
                     <div key={index}>
-                        <ListItem item={item} onAddCard={addCardToList} />
+                        <ListItem list={list} onAddCard={addCardToList} />
                     </div>
                 ))}
             </div>
