@@ -8,11 +8,13 @@ const cors = require('cors');
 require('dotenv').config();
 require('./config/database');
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-
 const app = express();
-app.use(cors());
+
+const corsOpts = {
+    origin: '*',
+    credentials: true
+};
+app.use(cors(corsOpts));
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -20,13 +22,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/', require('./routes/index'));
+app.use('/users', require('./routes/users'));
 app.use('/lists', require('./routes/lists'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
+});
+
+const port = process.env.PORT || 3001;
+
+app.listen(port, function () {
+    console.log(`Express running on http://localhost:${ port }`);
 });
 
 // error handler
