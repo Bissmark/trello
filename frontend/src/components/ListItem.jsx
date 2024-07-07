@@ -6,16 +6,21 @@ import CardDetail from './CardDetail';
 
 const ListItem = ({ list, client }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCardModalOpen, setIsCardModalOpen] = useState(false);
 
     return (
         <div>
-            <h3>{list.title}</h3>
+            <div className='flex flex-row bg-blue-400 rounded py-1 px-2.5'>
+                <h3 className='mr-3'>{list.title}</h3>
+                <button>...</button>
+            </div>
             <div className='flex flex-col'>
                 {list.cards.map((card, index) => (
                     <div key={index}>
-                        <Link to={`/card/${card.title}`}>
-                            <CardDetail card={card} />
-                        </Link>
+                        {/* <Link to={`/card/${card._id}`}>
+                        </Link> */}
+                        <button onClick={() => setIsCardModalOpen(true)}>{card.title}</button>
+                        <CardDetail card={card} isOpen={isCardModalOpen} onClose={() => setIsCardModalOpen(false)} />
                     </div>
                 ))}
             </div>

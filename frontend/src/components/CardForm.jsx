@@ -23,7 +23,6 @@ const CardForm = ({ list, isOpen, onClose, client}) => {
 
     const mutation = useMutation({
         mutationFn: async (formData) => {
-            console.log('formData:', formData);
             const response = await fetch('http://localhost:3001/cards', {
                 method: 'POST',
                 headers: {

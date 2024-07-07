@@ -8,7 +8,7 @@ const Home = ({ client }) => {
     const [listName, setListName] = useState('');
     const [cards, setCards] = useState([]);
 
-    const { isFetching, error, data: lists, refetch } = useQuery({
+    const { isFetching, error, data: lists } = useQuery({
         queryKey: ['lists'],
         queryFn: async () => {
             const response = await fetch('http://localhost:3001/lists');
