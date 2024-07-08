@@ -32,6 +32,18 @@ const addCard = async (req, res) => {
     }
 };
 
+const update = async (req, res) => {
+    try {
+        const list = await List.findByIdAndUpdate(req.body.listId, req.body);
+        res.json(list);
+    } catch (err) {
+        console.error('Error updating card:', err);
+        res.status(400).json(err);
+    }
+}
+
+
 module.exports = {
-    addCard
+    addCard,
+    update
 };

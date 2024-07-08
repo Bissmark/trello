@@ -18,7 +18,17 @@ const create = async (req, res) => {
     }
 };
 
+const deleteList = async (req, res) => {
+    try {
+        await List.findByIdAndDelete(req.params.id);
+        res.json(true);
+    } catch(err) {
+        res.status(400).json(err);
+    }
+};
+
 module.exports = {
     create,
-    index
+    index,
+    delete: deleteList
 };
