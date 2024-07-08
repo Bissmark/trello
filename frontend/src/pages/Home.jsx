@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { GrAdd } from "react-icons/gr";
 import ListItem from '../components/ListItem';
-import { useQuery, useMutation, QueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 
 const Home = ({ client }) => {
     const [addingList, setAddingList] = useState(false);

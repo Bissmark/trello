@@ -19,8 +19,9 @@ const create = async (req, res) => {
 };
 
 const deleteList = async (req, res) => {
+    console.log(req.body);
     try {
-        await List.findByIdAndDelete(req.params.id);
+        await List.deleteOne({_id: req.body.listId});
         res.json(true);
     } catch(err) {
         res.status(400).json(err);
