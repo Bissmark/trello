@@ -3,18 +3,12 @@ import { MdDriveFileRenameOutline, MdOutlineDescription } from "react-icons/md";
 import { GoImage } from "react-icons/go";
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-const PriorityLevels = {
-  High: "High",
-  Medium: "Medium",
-  Low: "Low",
-};
-
-const CardForm = ({ list, isOpen, onClose, client}) => {
+const CardForm = ({ list, isOpen, onClose, client, priorityLevels}) => {
     const [image, setImage] = useState('');
     const [card, setCard] = useState({
         title: '',
         description: '',
-        priority: PriorityLevels.High,
+        priority: priorityLevels.High,
     });
 
     const _handleImageChange = (e) => {
@@ -77,7 +71,7 @@ const CardForm = ({ list, isOpen, onClose, client}) => {
                             name="priority"
                             onChange={(e) => setCard({ ...card, priority: e.target.value })}
                         >
-                            {Object.values(PriorityLevels).map((level, index) => (
+                            {Object.values(priorityLevels).map((level, index) => (
                                 <option key={index} value={level}>{level}</option>
                             ))}
                         </select>

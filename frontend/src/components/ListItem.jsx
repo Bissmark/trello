@@ -4,9 +4,16 @@ import CardForm from './CardForm';
 import CardDetail from './CardDetail';
 import { useMutation } from '@tanstack/react-query';
 
+const PriorityLevels = {
+  High: "High",
+  Medium: "Medium",
+  Low: "Low",
+};
+
 const ListItem = ({ list, client }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCardModalOpen, setIsCardModalOpen] = useState(false);
+    const [selectedCard, setSelectedCard] = useState(null);
 
     const deleteList = useMutation({
         mutationFn: async () => {
@@ -29,6 +36,11 @@ const ListItem = ({ list, client }) => {
         await deleteList.mutateAsync();
     }
 
+    const handleCardClick = (card) => {
+        setSelectedCard(card); // Update the selected card
+        setIsCardModalOpen(true); // Open the modal
+    };
+
 
     return (
         <div>
@@ -39,10 +51,7 @@ const ListItem = ({ list, client }) => {
             <div className='flex flex-col'>
                 {list.cards.map((card, index) => (
                     <div key={index}>
-                        {/* <Link to={`/card/${card._id}`}>
-                        </Link> */}
-                        <button onClick={() => setIsCardModalOpen(true)}>{card.title}</button>
-                        <CardDetail card={card} isOpen={isCardModalOpen} onClose={() => setIsCardModalOpen(false)} />
+                        <button onClick={() => handleCardClick(card)}>{card.title}</button>
                     </div>
                 ))}
             </div>
@@ -51,8 +60,11 @@ const ListItem = ({ list, client }) => {
                     <span><GrAdd /></span>
                     Add Card
                 </button>
-                <CardForm list={list} isOpen={isModalOpen} client={client} onClose={() => setIsModalOpen(false)} />
+                <CardForm list={list} priorityLevels={PriorityLevels} isOpen={isModalOpen} client={client} onClose={() => setIsModalOpen(false)} />
             </div>
+            {isCardModalOpen && (
+                <CardDetail card={selectedCard} priorityLevels={PriorityLevels} isOpen={isCardModalOpen} onClose={() => setIsCardModalOpen(false)} />
+            )}
         </div>
     )
 }
