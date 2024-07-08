@@ -48,8 +48,6 @@ const CardDetail = ({ card, onClose, isOpen, priorityLevels, client }) => {
         await editMyCard.mutateAsync();
     }
 
-    //if (isPending) return <p>Loading...</p>
-    //if (error) return <p>Error: {error.message}</p>
     if (!isOpen) return null;
     if (!card) return null;
 

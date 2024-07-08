@@ -35,7 +35,6 @@ const addCard = async (req, res) => {
 };
 
 const update = async (req, res) => {
-    console.log(req.params);
     try {
         const card = await Card.findByIdAndUpdate(req.params.id, req.body);
         res.json(card);
