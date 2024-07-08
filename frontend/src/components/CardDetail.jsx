@@ -1,30 +1,51 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query"
+import { useState, useEffect } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query"
 
-const CardDetail = ({ card, onClose, isOpen, priorityLevels }) => {
+const CardDetail = ({ card, onClose, isOpen, priorityLevels, client }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editCard, setEditCard] = useState({
         title: '',
         description: '',
         priority: '',
     });
-    console.log(card);
 
-    // const { isPending, error, data } = useQuery({
-    //     queryKey: ['cards', card.id], 
-    //     queryFn: async () => {
-    //         const response = await fetch(`http://localhost:3001/cards/${card._id}`);
-    //         //console.log(response);
-    //         if (!response.ok) throw new Error('Network response was not ok');
-    //         return response.json();
-    //     }
-    // });
+    useEffect(() => {
+        if (card) {
+            setEditCard({
+                title: card.title || '',
+                description: card.description || '',
+                priority: card.priority || '',
+            });
+        }
+    }, [card]);
 
     const _handleChange = (e) => {
         setEditCard(prevState => ({ 
             ...prevState, 
             [e.target.name]: e.target.value 
         }));
+    }
+
+    const editMyCard = useMutation({
+        mutationFn: async () => {
+            const response = await fetch(`http://localhost:3001/cards/${card._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(editCard),
+            });
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        },
+        onSuccess: () => {
+            client.invalidateQueries(['cards']);
+            setIsEditing(false);
+        }
+    })
+
+    const _handleUpdate = async () => {
+        await editMyCard.mutateAsync();
     }
 
     //if (isPending) return <p>Loading...</p>
@@ -42,7 +63,7 @@ const CardDetail = ({ card, onClose, isOpen, priorityLevels }) => {
                             <input 
                                 type="text"
                                 name="title"
-                                value={card.title}
+                                value={editCard.title}
                                 onChange={_handleChange}
                             />
                         </div>
@@ -51,7 +72,7 @@ const CardDetail = ({ card, onClose, isOpen, priorityLevels }) => {
                             <input 
                                 type="text"
                                 name="description"
-                                value={card.description}
+                                value={editCard.description}
                                 onChange={_handleChange}
                             />
                         </div>
@@ -59,7 +80,7 @@ const CardDetail = ({ card, onClose, isOpen, priorityLevels }) => {
                             <label>Priority:</label>
                             <select 
                                 name="priority"
-                                value={card.priority}
+                                value={editCard.priority}
                                 onChange={_handleChange}
                             >
                                 {Object.values(priorityLevels).map((level, index) => (
@@ -77,7 +98,7 @@ const CardDetail = ({ card, onClose, isOpen, priorityLevels }) => {
                 )}
                 <div className="flex justify-end gap-2">
                     {isEditing ? (
-                        <button onClick={() => setIsEditing(false)}>Save</button>
+                        <button onClick={_handleUpdate}>Update</button>
                     ) : (
                         <button onClick={() => setIsEditing(true)}>Edit</button>
                     )}

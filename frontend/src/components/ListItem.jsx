@@ -63,7 +63,7 @@ const ListItem = ({ list, client }) => {
                 <CardForm list={list} priorityLevels={PriorityLevels} isOpen={isModalOpen} client={client} onClose={() => setIsModalOpen(false)} />
             </div>
             {isCardModalOpen && (
-                <CardDetail card={selectedCard} priorityLevels={PriorityLevels} isOpen={isCardModalOpen} onClose={() => setIsCardModalOpen(false)} />
+                <CardDetail card={selectedCard} priorityLevels={PriorityLevels} client={client} isOpen={isCardModalOpen} onClose={() => setIsCardModalOpen(false)} />
             )}
         </div>
     )

@@ -1,20 +1,7 @@
 const Card = require('../models/card');
 const List = require('../models/list');
 
-const show = async (req, res) => {
-    console.log(req.params);
-    try {
-        const list = await List.findById(req.params._id);
-        if (!list) {
-            console.log('List not found with id:', req.params._id);
-            return res.status(404).json({ message: 'List not found' });
-        }
-        res.json(list.cards);
-    } catch (err) {
-        console.error('Error getting cards:', err);
-        res.status(400).json(err);
-    }
-}
+
 
 const addCard = async (req, res) => {
     try {
@@ -48,9 +35,10 @@ const addCard = async (req, res) => {
 };
 
 const update = async (req, res) => {
+    console.log(req.params);
     try {
-        const list = await List.findByIdAndUpdate(req.body.listId, req.body);
-        res.json(list);
+        const card = await Card.findByIdAndUpdate(req.params.id, req.body);
+        res.json(card);
     } catch (err) {
         console.error('Error updating card:', err);
         res.status(400).json(err);
@@ -60,6 +48,5 @@ const update = async (req, res) => {
 
 module.exports = {
     addCard,
-    update,
-    show
+    update
 };
