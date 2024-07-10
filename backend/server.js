@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require('express-session');
 const cors = require('cors');
-const mongoStore = require('connect-mongo');
+// const mongoStore = require('connect-mongo');
 const passport = require('passport');
 
 require('dotenv').config();
@@ -14,19 +14,19 @@ require('./config/passport');
 
 const app = express();
 
-const corsOpts = {
-    origin: '*',
-    credentials: true
-};
-app.use(cors(corsOpts));
+// const corsOpts = {
+//     origin: '*',
+//     credentials: true
+// };
+app.use(cors());
 
 app.use(session({
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
-    store: mongoStore.create({ 
-        mongoUrl: process.env.DATABASE_URL 
-    })
+    // store: mongoStore.create({ 
+    //     mongoUrl: process.env.DATABASE_URL 
+    // })
 }));
 
 app.use(passport.initialize());
@@ -38,7 +38,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use('/', require('./routes/index'));
+app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
 app.use('/lists', require('./routes/lists'));
 app.use('/cards', require('./routes/cards'));

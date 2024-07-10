@@ -2,7 +2,7 @@ import { useState } from 'react';
 import LoginForm from '../components/LoginForm';
 import SignUpForm from '../components/SignUpForm';
 
-const AuthPage = ({ setUser }) => {
+const AuthPage = ({ user, setUser, setProfile }) => {
     const [showSignup, setShowSignup] = useState(false);
 
     return (
@@ -10,7 +10,7 @@ const AuthPage = ({ setUser }) => {
             { showSignup ? 
                 <SignUpForm setUser={setUser} showSignup={showSignup} setShowSignup={setShowSignup} />
                 :
-                <LoginForm setUser={setUser} showSignup={showSignup} setShowSignup={setShowSignup} />
+                <LoginForm user={user} setUser={setUser} setProfile={setProfile} showSignup={showSignup} setShowSignup={setShowSignup} />
             }
         </main>
     )

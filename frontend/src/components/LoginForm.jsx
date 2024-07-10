@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { login } from '../services/users-service';
 import { Link } from 'react-router-dom';
 import { IconContext } from 'react-icons';
 import { AiOutlineMail } from 'react-icons/ai';
 import { RiLockPasswordLine } from 'react-icons/ri';
-import { GoogleLogin } from '@react-oauth/google';
+import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-export default function LoginForm({ setUser, showSignup, setShowSignup }) {
+export default function LoginForm({ user, setUser, setProfile, showSignup, setShowSignup }) {
     const [credentials, setCredentials] = useState({
         email: '',
         password: ''
@@ -34,53 +35,56 @@ export default function LoginForm({ setUser, showSignup, setShowSignup }) {
         }
     }
 
-    const handleLoginSuccess = (credentialResponse) => {
-        // Redirect to homepage after successful login
-        const authorizationCode = credentialResponse.code || credentialResponse.credential;
+    const loginGoogle = useGoogleLogin({
+        onSuccess: (codeResponse) => setUser(codeResponse),
+        onError: (error) => console.error('Error:', error)
+    });
+        
 
-        // Check if authorizationCode is undefined
-        if (typeof authorizationCode === 'undefined') {
-            console.error('Authorization code is undefined.');
-            setError('Login failed due to an internal error. Please try again.');
-            return;
-        }
+    // const handleLoginSuccess = (credentialResponse) => {
+    //     // Redirect to homepage after successful login
+    //     const authorizationCode = credentialResponse.code || credentialResponse.credential;
+    //     const accessToken = credentialResponse.accessToken;
 
-        fetch('http://localhost:3001/users/auth/google', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ code: authorizationCode })
-        })
-        .then(response => response.json())
-        .then(data => {
-            setUser({
-                accessToken: data.access_token,
-                refreshToken: data.refresh_token,
-                profile: data.profile
-            });
-            navigate('/');
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    };
+    //     // Check if authorizationCode is undefined
+    //     if (typeof authorizationCode === 'undefined') {
+    //         console.error('Authorization code is undefined.');
+    //         setError('Login failed due to an internal error. Please try again.');
+    //         return;
+    //     }
+
+    //     fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`, {
+    //         method: 'GET',
+    //         headers: {
+    //             'Authorization': 'Bearer ' + accessToken,
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json'
+    //         },
+    //         //body: JSON.stringify({ code: authorizationCode })
+    //     })
+    //     .then(response => response.json())
+    //     .then(res => {
+    //         setUser(res.data);
+    //         navigate('/');
+    //     })
+    //     .catch(error => {
+    //         console.error('Error:', error);
+    //     });
+    // };
 
     return (
         <IconContext.Provider value={{ color: "white", size: "2.5em" }}>
             <div className='flex justify-center items-center h-screen'>
                 <div className='w-fit bg-gray-500 p-5 rounded-lg shadow text-center'>
                     <h1 className='my-4 text-5xl font-extrabold dark:text-white'>{showSignup ? 'Sign Up Page' : 'Login Page'}</h1>
-                    {/* <Link to='http://localhost:3001/auth/google' className='hover:text-blue-500'>
-                        <FaGoogle />
-                    </Link> */}
                     <div className='mb-5 flex justify-center'>
-                        <GoogleLogin
+                        <button onClick={() => loginGoogle()}>Sign in with Google</button>
+                        {/* <GoogleLogin
                             onSuccess={handleLoginSuccess}
                             onError={() => {
                                 console.log('Login Failed')
                             }}
-                        />
+                        /> */}
                     </div>
                     <form autoComplete="off" onSubmit={handleSubmit}>
                         <div className='flex border mx-auto w-48 rounded-lg mb-6'>

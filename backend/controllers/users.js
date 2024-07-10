@@ -32,13 +32,15 @@ const login = async (req, res) => {
 }
 
 const googleLogin = async (req, res) => {
+    console.log(req.body);
     const { code } = req.body;
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const clientSecret = process.env.GOOGLE_SECRET;
-    const redirectUri = process.env.GOOGLE_CALLBACK;
+    const redirectUri = process.env.GOOGLE_CALLBACK || process.env.GOOGLE_CALLBACK_RENDER;
     const grantType = 'authorization_code';
 
-    fetch('https://oauth2.googleapis.com/token', {
+    try {
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -50,15 +52,58 @@ const googleLogin = async (req, res) => {
             redirect_uri: redirectUri,
             grant_type: grantType
         })
+    }).then(response => {
+        console.log('response: ', response);
+        return response.json()
     })
-    .then(response => response.json())
-    .then(tokens => {
-        res.json(tokens);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    });
+    //console.log('tokenReponse: ', tokenResponse);
+
+    // Check if the access token is present in the response
+    if (!tokenResponse.access_token) {
+        console.error('Access token not found in response:', tokenResponse);
+        return res.status(500).json({ error: 'Failed to obtain access token' });
+    }
+
+    const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+        headers: {
+            'Authorization': `Bearer ${tokenResponse.access_token}`
+        }
+    }).then(response => response.json());
+
+    // Check if there was an error in the userInfo response
+    if (userInfoResponse.error) {
+        console.error('Error fetching user info:', userInfoResponse.error);
+        return res.status(500).json({ error: 'Failed to fetch user information' });
+    }
+
+    console.log(userInfoResponse);
+    // Proceed with your logic using userInfoResponse
+} catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+}
+    // fetch('https://oauth2.googleapis.com/token', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     },
+    //     body: new URLSearchParams({
+    //         code,
+    //         client_id: clientId,
+    //         client_secret: clientSecret,
+    //         redirect_uri: redirectUri,
+    //         grant_type: grantType
+    //     })
+    // })
+    // .then(response => response.json())
+
+    // .then(tokens => {
+    //     res.json(tokens);
+    // })
+    // .catch(error => {
+    //     console.error('Error:', error);
+    //     res.status(500).json({ error: 'Internal server error' });
+    // });
 }
 
 // Helper Function
