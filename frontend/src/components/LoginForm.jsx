@@ -1,20 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { login } from '../services/users-service';
 import { Link } from 'react-router-dom';
 import { IconContext } from 'react-icons';
 import { AiOutlineMail } from 'react-icons/ai';
 import { RiLockPasswordLine } from 'react-icons/ri';
-import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useGoogleLogin } from '@react-oauth/google';
 
-export default function LoginForm({ user, setUser, logOut, showSignup, setShowSignup, setProfile }) {
+export default function LoginForm({ setUser, showSignup, setShowSignup, setProfile }) {
     const [credentials, setCredentials] = useState({
         email: '',
         password: ''
     });
     const [error, setError] = useState('');
-    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setCredentials({ 
@@ -53,24 +50,11 @@ export default function LoginForm({ user, setUser, logOut, showSignup, setShowSi
             }).then(res => res.json());
             setUser(userInfo);
             setProfile(userInfo);
+            localStorage.setItem('user', JSON.stringify(userInfo));
         } catch (error) {
             console.log('Login Failed, Try Again', error);
         }
     }
-    // useEffect(() => {
-    //     if (user) {
-    //         fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
-    //             headers: {
-    //                 Authorization: `Bearer ${user.access_token}`,
-    //                 Accept: 'application/json',
-    //             }
-    //         })
-    //         .then(response => {
-    //             setProfile(response.data)
-    //         })
-    //         .catch(error => console.error('Error:', error));
-    //     }
-    // }, [user]);
 
     return (
         <IconContext.Provider value={{ color: "white", size: "2.5em" }}>
@@ -79,12 +63,6 @@ export default function LoginForm({ user, setUser, logOut, showSignup, setShowSi
                     <h1 className='my-4 text-5xl font-extrabold dark:text-white'>{showSignup ? 'Sign Up Page' : 'Login Page'}</h1>
                     <div className='mb-5 flex justify-center'>
                         <button onClick={login}>Sign in with Google</button>
-                        {/* <GoogleLogin
-                            onSuccess={handleLoginSuccess}
-                            onError={() => {
-                                console.log('Login Failed')
-                            }}
-                        /> */}
                     </div>
                     <form autoComplete="off" onSubmit={handleSubmit}>
                         <div className='flex border mx-auto w-48 rounded-lg mb-6'>

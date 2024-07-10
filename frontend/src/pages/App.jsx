@@ -15,6 +15,14 @@ const App = () => {
     const [user, setUser] = useState(null);
     const [profile, setProfile] = useState([]);
 
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            setUser(user);
+            setProfile(user);
+        }
+    }, []);
+
     const logOut = () => {
         googleLogout();
         setProfile([]);
