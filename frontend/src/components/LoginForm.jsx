@@ -8,7 +8,7 @@ import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-export default function LoginForm({ user, setUser, setProfile, showSignup, setShowSignup }) {
+export default function LoginForm({ user, setUser, logOut, showSignup, setShowSignup, setProfile }) {
     const [credentials, setCredentials] = useState({
         email: '',
         password: ''
@@ -25,6 +25,13 @@ export default function LoginForm({ user, setUser, setProfile, showSignup, setSh
         setError('');
     }
 
+    const login = useGoogleLogin({
+        onSuccess: (codeResponse) => {
+            handleLoginSuccess(codeResponse);
+        },
+        onError: (error) => console.log('Login Failed:', error)
+    });
+
     const handleSubmit = async(e) => {
         e.preventDefault();
         try {
@@ -35,42 +42,35 @@ export default function LoginForm({ user, setUser, setProfile, showSignup, setSh
         }
     }
 
-    const loginGoogle = useGoogleLogin({
-        onSuccess: (codeResponse) => setUser(codeResponse),
-        onError: (error) => console.error('Error:', error)
-    });
-        
-
-    // const handleLoginSuccess = (credentialResponse) => {
-    //     // Redirect to homepage after successful login
-    //     const authorizationCode = credentialResponse.code || credentialResponse.credential;
-    //     const accessToken = credentialResponse.accessToken;
-
-    //     // Check if authorizationCode is undefined
-    //     if (typeof authorizationCode === 'undefined') {
-    //         console.error('Authorization code is undefined.');
-    //         setError('Login failed due to an internal error. Please try again.');
-    //         return;
+    const handleLoginSuccess = async (response) => {
+        const { access_token } = response;
+        try {
+            const userInfo = await fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${access_token}`, {
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                    Accept: 'application/json',
+                }
+            }).then(res => res.json());
+            setUser(userInfo);
+            setProfile(userInfo);
+        } catch (error) {
+            console.log('Login Failed, Try Again', error);
+        }
+    }
+    // useEffect(() => {
+    //     if (user) {
+    //         fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
+    //             headers: {
+    //                 Authorization: `Bearer ${user.access_token}`,
+    //                 Accept: 'application/json',
+    //             }
+    //         })
+    //         .then(response => {
+    //             setProfile(response.data)
+    //         })
+    //         .catch(error => console.error('Error:', error));
     //     }
-
-    //     fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`, {
-    //         method: 'GET',
-    //         headers: {
-    //             'Authorization': 'Bearer ' + accessToken,
-    //             'Accept': 'application/json',
-    //             'Content-Type': 'application/json'
-    //         },
-    //         //body: JSON.stringify({ code: authorizationCode })
-    //     })
-    //     .then(response => response.json())
-    //     .then(res => {
-    //         setUser(res.data);
-    //         navigate('/');
-    //     })
-    //     .catch(error => {
-    //         console.error('Error:', error);
-    //     });
-    // };
+    // }, [user]);
 
     return (
         <IconContext.Provider value={{ color: "white", size: "2.5em" }}>
@@ -78,7 +78,7 @@ export default function LoginForm({ user, setUser, setProfile, showSignup, setSh
                 <div className='w-fit bg-gray-500 p-5 rounded-lg shadow text-center'>
                     <h1 className='my-4 text-5xl font-extrabold dark:text-white'>{showSignup ? 'Sign Up Page' : 'Login Page'}</h1>
                     <div className='mb-5 flex justify-center'>
-                        <button onClick={() => loginGoogle()}>Sign in with Google</button>
+                        <button onClick={login}>Sign in with Google</button>
                         {/* <GoogleLogin
                             onSuccess={handleLoginSuccess}
                             onError={() => {
