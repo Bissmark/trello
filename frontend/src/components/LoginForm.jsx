@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { login } from '../services/users-service';
+import { loginJWT } from '../services/users-service';
 import { Link } from 'react-router-dom';
 import { IconContext } from 'react-icons';
 import { AiOutlineMail } from 'react-icons/ai';
@@ -32,7 +32,7 @@ export default function LoginForm({ setUser, showSignup, setShowSignup, setProfi
     const handleSubmit = async(e) => {
         e.preventDefault();
         try {
-            const user = await login(credentials);
+            const user = await loginJWT(credentials);
             setUser(user);
         } catch {
             setError('Log In Failed - Try Again');

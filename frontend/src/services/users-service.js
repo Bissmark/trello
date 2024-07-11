@@ -11,7 +11,7 @@ export async function signUp(userData) {
   return getUser();
 }
 
-export async function login(credentials) {
+export async function loginJWT(credentials) {
     // Delegate the AJAX request to the users-api.js
     // module.
     const token = await usersAPI.login(credentials);

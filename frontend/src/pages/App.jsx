@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider} from '@tanstack/react-query';
-import { GoogleOAuthProvider, useGoogleLogin, googleLogout} from '@react-oauth/google'
-import { getUser } from '../services/users-service';
+import { googleLogout} from '@react-oauth/google'
 import Navbar from '../components/Navbar'
 import Home from './Home'
 import AuthPage from './AuthPage'
 import Profile from './Profile'
-import axios from 'axios';
 
 const queryClient = new QueryClient();
 
@@ -25,6 +23,7 @@ const App = () => {
 
     const logOut = () => {
         googleLogout();
+        localStorage.removeItem('user');
         setProfile([]);
         setUser(null);
     };
