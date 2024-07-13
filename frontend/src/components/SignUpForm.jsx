@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { signUp } from '../services/users-api';
 import { Link } from 'react-router-dom';
 import { AiOutlineMail } from 'react-icons/ai';
 import { RiLockPasswordLine } from 'react-icons/ri';
 import { IconContext } from 'react-icons';
 import { RiLockPasswordFill } from 'react-icons/ri';
 import { CgRename } from 'react-icons/cg';
+import * as authService from '../services/authService';
 
 const SignUpForm = ({ setUser, showSignup, setShowSignup }) => {
     const [userData, setUserData] = useState({
@@ -18,17 +18,13 @@ const SignUpForm = ({ setUser, showSignup, setShowSignup }) => {
     const [error, setError] = useState('');
 
     const handleChange = (e) => {
-        setUserData({
-            ...userData,
-            [e.target.name]: e.target.value,
-            error: ''
-        });
+        setUserData({...userData,[e.target.name]: e.target.value, error: ''});
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const user = await signUp(userData);
+            const user = await authService.signup(userData);
             setUser(user);
         } catch {
             setError('Sign Up Failed - Try Again');

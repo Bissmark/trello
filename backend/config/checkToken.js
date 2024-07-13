@@ -1,17 +1,17 @@
 const jwt = require('jsonwebtoken');
 
-module.exports = function(req, res, next) {
-  let token = req.get('Authorization') || req.query.token;
-  req.user = null;
-  
-  if (!token) return next();
-
-  token = token.replace('Bearer ', '');
-
-  jwt.verify(token, process.env.SECRET, function(err, decoded) {
-    if (err) return next();
-    req.user = decoded.user;
-    req.exp = new Date(decoded.exp * 1000);
-    return next();
-  });
+const verifyToken = (req, res, next) => {
+	try {
+		const token = req.headers.authorization.split(' ')[1];
+		const decoded = jwt.verify(token, process.env.SECRET);
+		// Assign decoded payload to req.user
+		req.user = decoded;
+		// Call next() to invoke the next middleware function
+		next();
+	} catch (error) {
+		// If any errors, send back a 401 status and an 'Invalid token.' error message
+		res.status(401).json({ error: 'Invalid authorization token.' });
+	}
 };
+
+module.exports = verifyToken;

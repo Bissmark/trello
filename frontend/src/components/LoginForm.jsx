@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { loginJWT } from '../services/users-service';
 import { Link } from 'react-router-dom';
 import { IconContext } from 'react-icons';
 import { AiOutlineMail } from 'react-icons/ai';
 import { RiLockPasswordLine } from 'react-icons/ri';
 import { useGoogleLogin } from '@react-oauth/google';
+import * as authService from '../services/authService';
 
 export default function LoginForm({ setUser, showSignup, setShowSignup, setProfile }) {
     const [credentials, setCredentials] = useState({
@@ -14,11 +14,7 @@ export default function LoginForm({ setUser, showSignup, setShowSignup, setProfi
     const [error, setError] = useState('');
 
     const handleChange = (e) => {
-        setCredentials({ 
-            ...credentials, 
-            [e.target.name]: e.target.value,
-            error: '' 
-        });
+        setCredentials({ ...credentials, [e.target.name]: e.target.value, error: '' });
         setError('');
     }
 
@@ -32,12 +28,27 @@ export default function LoginForm({ setUser, showSignup, setShowSignup, setProfi
     const handleSubmit = async(e) => {
         e.preventDefault();
         try {
-            const user = await loginJWT(credentials);
+            const user = await authService.login(credentials);
+            console.log(user);
             setUser(user);
-        } catch {
-            setError('Log In Failed - Try Again');
+        } catch (error) {
+            setError(error.message);
         }
     }
+
+    // Placeholder function for sending the user's ID to the backend
+// async function sendUserIdToBackend(userId) {
+//     const response = await fetch('http://localhost:3001/updateUserInfo', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             // Include any necessary headers, such as authorization tokens
+//         },
+//         body: JSON.stringify({ userId }),
+//     });
+//     const data = await response.json();
+//     console.log(data); // Log or handle the response as needed
+// }
 
     const handleLoginSuccess = async (response) => {
         const { access_token } = response;

@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const listsController = require('../controllers/lists');
+const checkToken = require('../config/checkToken');
 
-router.post('/', listsController.create);
+router.use(checkToken);
+
 router.get('/', listsController.index);
+router.post('/', listsController.create);
 router.delete('/:id', listsController.delete);
 
 module.exports = router;

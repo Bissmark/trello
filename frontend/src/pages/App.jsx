@@ -6,20 +6,22 @@ import Navbar from '../components/Navbar'
 import Home from './Home'
 import AuthPage from './AuthPage'
 import Profile from './Profile'
+import * as authService from '../services/authService';
 
 const queryClient = new QueryClient();
 
 const App = () => {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(authService.getUser());
+    // const [user, setUser] = useState(getUser());
     const [profile, setProfile] = useState([]);
 
-    useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (user) {
-            setUser(user);
-            setProfile(user);
-        }
-    }, []);
+    // useEffect(() => {
+    //     const user = JSON.parse(localStorage.getItem('user'));
+    //     if (user) {
+    //         setUser(user);
+    //         setProfile(user);
+    //     }
+    // }, []);
 
     const logOut = () => {
         googleLogout();
@@ -40,8 +42,8 @@ const App = () => {
                             <Route path='/profile' element={<Profile />} />
                         </Routes>
                     </>
-                : 
-                    <AuthPage user={user} setUser={setUser} setProfile={setProfile} logOut={logOut} />
+                :
+                <AuthPage user={user} setUser={setUser} setProfile={setProfile} logOut={logOut} />
                 }
             </QueryClientProvider>
         </div>

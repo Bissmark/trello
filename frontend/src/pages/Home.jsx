@@ -3,15 +3,20 @@ import { GrAdd } from "react-icons/gr";
 import ListItem from '../components/ListItem';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-const Home = ({ client }) => {
+const Home = ({ client, user }) => {
     const [addingList, setAddingList] = useState(false);
     const [listName, setListName] = useState('');
     const [cards, setCards] = useState([]);
+    console.log(user);
 
     const { isFetching, error, data: lists } = useQuery({
-        queryKey: ['lists'],
+        queryKey: ['lists', user._id],
         queryFn: async () => {
-            const response = await fetch('http://localhost:3001/lists');
+            const response = await fetch(`http://localhost:3001/lists`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                }
+            });
             if (!response.ok) throw new Error('Bad Request');
             return response.json();
         },
@@ -19,12 +24,18 @@ const Home = ({ client }) => {
 
     const addListMutation = useMutation({
         mutationFn: async (newList) => {
+            const payload = {
+                ...newList,
+                user: user._id,
+            }
+
             const response = await fetch('http://localhost:3001/lists', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(newList),
+                body: JSON.stringify(payload)
             });
             if (!response.ok) throw new Error('Network response was not ok');
             return response.json();
@@ -38,7 +49,8 @@ const Home = ({ client }) => {
 
     const _handleSubmit = async (e) => {
         e.preventDefault();
-        await addListMutation.mutateAsync({ title: listName });
+        console.log(user);
+        await addListMutation.mutateAsync({ title: listName, user: user._id});
         setListName('');
         setAddingList(false);
     }
