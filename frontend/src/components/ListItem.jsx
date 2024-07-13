@@ -13,6 +13,7 @@ const PriorityLevels = {
 const ListItem = ({ list, client }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCardModalOpen, setIsCardModalOpen] = useState(false);
+    //const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [selectedCard, setSelectedCard] = useState(null);
 
     const deleteList = useMutation({
@@ -21,6 +22,7 @@ const ListItem = ({ list, client }) => {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
                 body: JSON.stringify({ listId: list._id })
             });

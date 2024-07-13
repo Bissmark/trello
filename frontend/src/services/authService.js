@@ -40,7 +40,6 @@ const login = async (user) => {
         if (json.token) {
             localStorage.setItem('token', json.token); // add this line to store the JWT token in localStorage
             const user = JSON.parse(atob(json.token.split('.')[1]));
-            console.log(user);
             return user;
         }
     } catch (err) {

@@ -7,12 +7,11 @@ const Home = ({ client, user }) => {
     const [addingList, setAddingList] = useState(false);
     const [listName, setListName] = useState('');
     const [cards, setCards] = useState([]);
-    console.log(user);
 
     const { isFetching, error, data: lists } = useQuery({
         queryKey: ['lists', user._id],
         queryFn: async () => {
-            const response = await fetch(`http://localhost:3001/lists`, {
+            const response = await fetch('http://localhost:3001/lists', {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 }
@@ -49,7 +48,6 @@ const Home = ({ client, user }) => {
 
     const _handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(user);
         await addListMutation.mutateAsync({ title: listName, user: user._id});
         setListName('');
         setAddingList(false);

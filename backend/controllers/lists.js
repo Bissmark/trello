@@ -12,7 +12,6 @@ const index = async (req, res) => {
 
 const create = async (req, res) => {
     try {
-        //req.body.user = req.user._id;
         const list = await List.create({...req.body, user: req.user._id});
         console.log(list);
         res.status(201).json(await list.populate('user'));
@@ -22,7 +21,6 @@ const create = async (req, res) => {
 };
 
 const deleteList = async (req, res) => {
-    //console.log(req.body);
     try {
         await List.deleteOne({_id: req.body.listId});
         res.json(true);

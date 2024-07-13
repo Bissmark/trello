@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import { googleLogout} from '@react-oauth/google'
@@ -12,16 +12,7 @@ const queryClient = new QueryClient();
 
 const App = () => {
     const [user, setUser] = useState(authService.getUser());
-    // const [user, setUser] = useState(getUser());
     const [profile, setProfile] = useState([]);
-
-    // useEffect(() => {
-    //     const user = JSON.parse(localStorage.getItem('user'));
-    //     if (user) {
-    //         setUser(user);
-    //         setProfile(user);
-    //     }
-    // }, []);
 
     const logOut = () => {
         googleLogout();
@@ -35,11 +26,11 @@ const App = () => {
             <QueryClientProvider client={queryClient}>
                 { user ?
                     <>
-                        <Navbar user={user} setUser={setUser} logOut={logOut} profile={profile} setProfile={setProfile} />
+                        <Navbar user={user} client={queryClient} logOut={logOut} profile={profile} setProfile={setProfile} />
                         <Routes>
                             <Route path="/" element={<Home client={queryClient} user={user} />} />
                             <Route path="*" element={<Navigate to="/" />} />
-                            <Route path='/profile' element={<Profile />} />
+                            <Route path='/profile' element={<Profile user={user} />} />
                         </Routes>
                     </>
                 :

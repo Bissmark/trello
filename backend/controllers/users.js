@@ -27,6 +27,7 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
     try {
 		const user = await User.findOne({ email: req.body.email });
+        console.log(user);
 		if (user && bcrypt.compareSync(req.body.password, user.password)) {
 			const token = jwt.sign({ email: user.email, _id: user._id }, process.env.SECRET);
 			res.status(200).json({ token });

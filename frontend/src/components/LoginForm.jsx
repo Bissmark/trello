@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { IconContext } from 'react-icons';
 import { AiOutlineMail } from 'react-icons/ai';
 import { RiLockPasswordLine } from 'react-icons/ri';
@@ -12,6 +12,7 @@ export default function LoginForm({ setUser, showSignup, setShowSignup, setProfi
         password: ''
     });
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value, error: '' });
@@ -29,26 +30,12 @@ export default function LoginForm({ setUser, showSignup, setShowSignup, setProfi
         e.preventDefault();
         try {
             const user = await authService.login(credentials);
-            console.log(user);
             setUser(user);
+            navigate('/profile');
         } catch (error) {
             setError(error.message);
         }
     }
-
-    // Placeholder function for sending the user's ID to the backend
-// async function sendUserIdToBackend(userId) {
-//     const response = await fetch('http://localhost:3001/updateUserInfo', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//             // Include any necessary headers, such as authorization tokens
-//         },
-//         body: JSON.stringify({ userId }),
-//     });
-//     const data = await response.json();
-//     console.log(data); // Log or handle the response as needed
-// }
 
     const handleLoginSuccess = async (response) => {
         const { access_token } = response;
