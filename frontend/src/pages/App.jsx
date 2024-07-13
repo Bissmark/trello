@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar'
 import Home from './Home'
 import AuthPage from './AuthPage'
 import Profile from './Profile'
+import BoardDetails from './BoardDetails'
 import * as authService from '../services/authService';
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => {
                             <Route path="/" element={<Home client={queryClient} user={user} />} />
                             <Route path="*" element={<Navigate to="/" />} />
                             <Route path='/profile' element={<Profile user={user} />} />
+                            <Route path='/boards/:id' element={<BoardDetails />} />
                         </Routes>
                     </>
                 :

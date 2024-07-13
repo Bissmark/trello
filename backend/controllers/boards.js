@@ -10,6 +10,15 @@ const index = async (req, res) => {
     }
 };
 
+const show = async (req, res) => {
+    try {
+        const board = await Board.findById(req.params.id).populate('user');
+        res.status(200).json(board);
+    } catch(err) {
+        res.status(400).json(err);
+    }
+};
+
 const create = async (req, res) => {
     try {
         const board = await Board.create({...req.body, user: req.user._id});
@@ -31,5 +40,6 @@ const deleteBoard = async (req, res) => {
 module.exports = {
     create,
     index,
+    show,
     delete: deleteBoard
 };

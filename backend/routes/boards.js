@@ -7,6 +7,7 @@ router.use(checkToken);
 
 router.get('/', boardsController.index);
 router.post('/', boardsController.create);
+router.get('/:id', boardsController.show);
 router.delete('/:id', boardsController.delete);
 
 module.exports = router;

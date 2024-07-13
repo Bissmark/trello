@@ -1,4 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+import BoardDetails from "./BoardDetails";
 
 const Profile = ({user}) => {
 
@@ -25,14 +27,10 @@ const Profile = ({user}) => {
             {user.name && <p>Name: {user.name }</p>}
 
             <h2>Boards:</h2>
-            {/* <ul>
-                {user.boards && user.boards.map(board => (
-                    <li key={board.id}>{board.name}</li>
-                ))}
-            </ul> */}
             {boards?.map(board => (
                 <div key={board._id}>
-                    <h3>{board.name}</h3>
+                    <Link className="text-blue-600 underline" to={`/boards/${board._id}`}>{board.name}</Link>
+                    {/* <BoardDetails board={board} /> */}
                 </div>
             ))}
 
