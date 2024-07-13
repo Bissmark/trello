@@ -32,7 +32,7 @@ const App = () => {
                             <Route path="/" element={<Home client={queryClient} user={user} />} />
                             <Route path="*" element={<Navigate to="/" />} />
                             <Route path='/profile' element={<Profile user={user} />} />
-                            <Route path='/boards/:id' element={<BoardDetails />} />
+                            <Route path='/boards/:id' element={<BoardDetails client={queryClient} />} />
                         </Routes>
                     </>
                 :
