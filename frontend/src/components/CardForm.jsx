@@ -38,6 +38,7 @@ const CardForm = ({ list, isOpen, onClose, client, priorityLevels}) => {
             ...card,
             listId: list._id,
         };
+        console.log(newCard);
         await mutation.mutateAsync(newCard);
     };
 

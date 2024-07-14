@@ -6,7 +6,7 @@ import ListItem from '../components/ListItem';
 const BoardDetails = ({ client }) => {
     const [addingList, setAddingList] = useState(false);
     const [listName, setListName] = useState('');
-
+    const [cards, setCards] = useState([]);
 
     const { id } = useParams();
 
@@ -54,6 +54,11 @@ const BoardDetails = ({ client }) => {
         setAddingList(false);
     }
 
+    const addCardToList = (newCard) => {
+        setCards([...cards, newCard]);
+        console.log(cards);
+    }
+
     if (isFetching) return <p>Loading...</p>
     if (error) return <p>Error: {error.message}</p>
 
@@ -61,12 +66,14 @@ const BoardDetails = ({ client }) => {
         <div>
             <h1>Board {board.name}</h1>
 
-            { board.lists?.map(list => (
-                <div key={list._id}>
-                    {/* <ListItem list={list} /> */}
-                    {list.title}
+            <div className='flex flex-row'>
+                <div className='flex flex-row flex-start'>
+                    { board.lists?.map(list => (
+                        <div key={list._id}>
+                            <ListItem list={list} onAddCard={addCardToList} client={client} />
+                        </div>
+                    ))}
                 </div>
-            ))}
             <div>
                 {!addingList ? (
                     <button onClick={() => setAddingList(true)}>Add List</button>
@@ -83,13 +90,7 @@ const BoardDetails = ({ client }) => {
                     </form>
                 )}
             </div>
-            {/* <h1>{board.name}</h1> */}
-            {/* <h2>Lists:</h2>
-            {lists?.map(list => (
-                <div key={list._id}>
-                    <Link className="text-blue-600 underline" to={`/lists/${list._id}`}>{list.name}</Link>
-                </div>
-            ))} */}
+            </div>
         </div>
     )
 }

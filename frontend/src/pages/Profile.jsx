@@ -33,7 +33,6 @@ const Profile = ({user}) => {
                     {/* <BoardDetails board={board} /> */}
                 </div>
             ))}
-
         </div>
     )
 }

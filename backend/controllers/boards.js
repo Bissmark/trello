@@ -12,7 +12,11 @@ const index = async (req, res) => {
 
 const show = async (req, res) => {
     try {
-        const board = await Board.findById(req.params.id).populate('user').populate('lists');
+        const board = await Board.findById(req.params.id)
+                                .populate({
+                                    path: 'lists',
+                                    populate: { path: 'cards' }
+                                }).populate('user');
         res.status(200).json(board);
     } catch(err) {
         res.status(400).json(err);

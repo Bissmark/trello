@@ -3,7 +3,11 @@ const Board = require('../models/board');
 
 const index = async (req, res) => {
     try {
-        const lists = await List.find({}).populate('board').sort({createdAt: 'desc'});
+        const lists = await List.find({})
+        .populate('board')
+        .populate('cards')
+        .sort({createdAt: 'desc'});
+        console.log(lists);
         res.status(200).json(lists);
     } catch(err) {
         console.log(err);
@@ -12,23 +16,16 @@ const index = async (req, res) => {
 };
 
 const create = async (req, res) => {
-    console.log(req.body);
     try {
-        //req.body.user = req.user._id;
-        //const list = await List.create(req.params.id);
-        // const board = await Board.findById(req.body.board);
-        // console.log(board);
-        // board.lists.push(req.body);
-        // await board.save();
         const newList = await List.create({
             title: req.body.title,
-            board: req.body.board // Assuming you want to keep a reference to the board in your list
+            board: req.body.board
         });
 
-        // Step 2: Get the ObjectId of the newly created list
+        // Get the ObjectId of the newly created list
         const listId = newList._id;
 
-        // Step 3: Update the board document by pushing the listId into board.lists
+        // Update the board document by pushing the listId into board.lists
         await Board.findByIdAndUpdate(req.body.board, {
             $push: { lists: listId }
         });

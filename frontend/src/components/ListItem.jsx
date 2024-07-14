@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { GrAdd } from 'react-icons/gr';
 import CardForm from './CardForm';
 import CardDetail from './CardDetail';
-import { useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 
 const PriorityLevels = {
   High: "High",
@@ -51,8 +51,8 @@ const ListItem = ({ list, client }) => {
                 <button onClick={_handleDelete}>X</button>
             </div>
             <div className='flex flex-col'>
-                {list.cards.map((card, index) => (
-                    <div key={index}>
+                {list.cards.map(card => (
+                    <div key={card._id}>
                         <button onClick={() => handleCardClick(card)}>{card.title}</button>
                     </div>
                 ))}
