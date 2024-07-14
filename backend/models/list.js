@@ -6,11 +6,7 @@ const listSchema = new Schema({
     cards: [{
         type: Schema.Types.ObjectId,
         ref: 'Card'
-    }],
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    }
+    }]
 }, {
     timestamps: true
 });

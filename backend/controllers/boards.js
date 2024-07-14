@@ -12,7 +12,7 @@ const index = async (req, res) => {
 
 const show = async (req, res) => {
     try {
-        const board = await Board.findById(req.params.id).populate('user');
+        const board = await Board.findById(req.params.id).populate('user').populate('lists');
         res.status(200).json(board);
     } catch(err) {
         res.status(400).json(err);

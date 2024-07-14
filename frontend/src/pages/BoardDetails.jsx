@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
+import ListItem from '../components/ListItem';
 
 const BoardDetails = ({ client }) => {
     const [addingList, setAddingList] = useState(false);
@@ -62,12 +63,8 @@ const BoardDetails = ({ client }) => {
 
             { board.lists?.map(list => (
                 <div key={list._id}>
-                    <h2>{list.name}</h2>
-                    {list.cards?.map(card => (
-                        <div key={card._id}>
-                            <p>{card.name}</p>
-                        </div>
-                    ))}
+                    {/* <ListItem list={list} /> */}
+                    {list.title}
                 </div>
             ))}
             <div>
