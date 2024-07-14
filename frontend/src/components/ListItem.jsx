@@ -43,6 +43,19 @@ const ListItem = ({ list, client }) => {
         setIsCardModalOpen(true); // Open the modal
     };
 
+    const getPriorityColour = (priority) => {
+    switch (priority) {
+        case 'Low':
+            return 'green';
+        case 'Medium':
+            return 'yellow';
+        case 'High':
+            return 'red';
+        default:
+            return 'black';
+        }
+    };
+
 
     return (
         <div>
@@ -53,7 +66,7 @@ const ListItem = ({ list, client }) => {
             <div className='flex flex-col'>
                 {list.cards.map(card => (
                     <div key={card._id}>
-                        <button onClick={() => handleCardClick(card)}>{card.title}</button>
+                        <button style={{ backgroundColor: getPriorityColour(card.priority)}} onClick={() => handleCardClick(card)}>{card.title}</button>
                     </div>
                 ))}
             </div>

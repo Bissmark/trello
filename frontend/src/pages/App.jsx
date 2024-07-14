@@ -29,7 +29,7 @@ const App = () => {
                     <>
                         <Navbar user={user} client={queryClient} logOut={logOut} profile={profile} setProfile={setProfile} />
                         <Routes>
-                            <Route path="/" element={<Home client={queryClient} user={user} />} />
+                            <Route path="/" element={<Home />} />
                             <Route path="*" element={<Navigate to="/" />} />
                             <Route path='/profile' element={<Profile user={user} />} />
                             <Route path='/boards/:id' element={<BoardDetails client={queryClient} />} />

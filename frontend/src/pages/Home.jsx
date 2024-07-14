@@ -4,66 +4,67 @@ import ListItem from '../components/ListItem';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 const Home = ({ client, user }) => {
-    const [addingList, setAddingList] = useState(false);
-    const [listName, setListName] = useState('');
-    const [cards, setCards] = useState([]);
+    // const [addingList, setAddingList] = useState(false);
+    // const [listName, setListName] = useState('');
+    // const [cards, setCards] = useState([]);
 
-    const { isFetching, error, data: lists } = useQuery({
-        queryKey: ['lists', user._id],
-        queryFn: async () => {
-            const response = await fetch('http://localhost:3001/lists', {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                }
-            });
-            if (!response.ok) throw new Error('Bad Request');
-            return response.json();
-        },
-    })
+    // const { isFetching, error, data: lists } = useQuery({
+    //     queryKey: ['lists', user._id],
+    //     queryFn: async () => {
+    //         const response = await fetch('http://localhost:3001/lists', {
+    //             headers: {
+    //                 Authorization: `Bearer ${localStorage.getItem('token')}`,
+    //             }
+    //         });
+    //         if (!response.ok) throw new Error('Bad Request');
+    //         return response.json();
+    //     },
+    // })
 
-    const addListMutation = useMutation({
-        mutationFn: async (newList) => {
-            const payload = {
-                ...newList,
-                user: user._id,
-            }
+    // const addListMutation = useMutation({
+    //     mutationFn: async (newList) => {
+    //         const payload = {
+    //             ...newList,
+    //             user: user._id,
+    //         }
 
-            const response = await fetch('http://localhost:3001/lists', {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            });
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.json();
-        },
-        onSuccess: () => {
-            // Invalidate and refetch lists query to update the UI
-            client.invalidateQueries(['lists']);
-        },
-    });
+    //         const response = await fetch('http://localhost:3001/lists', {
+    //             method: 'POST',
+    //             headers: {
+    //                 Authorization: `Bearer ${localStorage.getItem('token')}`,
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify(payload)
+    //         });
+    //         if (!response.ok) throw new Error('Network response was not ok');
+    //         return response.json();
+    //     },
+    //     onSuccess: () => {
+    //         // Invalidate and refetch lists query to update the UI
+    //         client.invalidateQueries(['lists']);
+    //     },
+    // });
     
 
-    const _handleSubmit = async (e) => {
-        e.preventDefault();
-        await addListMutation.mutateAsync({ title: listName, user: user._id});
-        setListName('');
-        setAddingList(false);
-    }
+    // const _handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     await addListMutation.mutateAsync({ title: listName, user: user._id});
+    //     setListName('');
+    //     setAddingList(false);
+    // }
 
 
-    const addCardToList = (newCard) => {
-        setCards([...cards, newCard]);
-    }
+    // const addCardToList = (newCard) => {
+    //     setCards([...cards, newCard]);
+    // }
 
-    if (isFetching) return <p>Loading...</p>
-    if (error) return <p>Error: {error.message}</p>
+    // if (isFetching) return <p>Loading...</p>
+    // if (error) return <p>Error: {error.message}</p>
 
     return (
         <div className='flex flex-row'>
-            <div className='flex flex-row flex-start'>
+            <h1>Home</h1>
+            {/* <div className='flex flex-row flex-start'>
                 {lists?.map((list, index) => (
                     <div key={index}>
                         <ListItem list={list} onAddCard={addCardToList} client={client} />
@@ -86,7 +87,7 @@ const Home = ({ client, user }) => {
                     </form>
                 
                 )}
-            </div>
+            </div> */}
         </div>
     )
 }
