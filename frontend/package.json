@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "start": "serve -s dist -l $PORT",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "render-build": "npm install && npm run build"
   },
   "dependencies": {
     "@react-oauth/google": "^0.12.1",
